@@ -1,19 +1,11 @@
 data "aws_ami" "linux2_ami" {
   most_recent = true
-
-  filter {
-   name   = "owner-alias"
-   values = ["amazon"]
-  }
+  owners = ["amazon"]
 
   filter {
    name   = "name"
    values = ["amzn2-ami-hvm*"]
  }
-  filter {
-    name   = "block-device-mapping.volume-type"
-    values = ["gp3"]
-  }
 }
 
 resource "aws_ebs_volume" "foundry_instance" {
@@ -34,7 +26,7 @@ resource "aws_volume_attachment" "ebs_att" {
 }
 
 resource "aws_instance" "foundry_instance" {
-  ami               = data.aws_ami.linux2_ami
+  ami               = data.aws_ami.linux2_ami.id
   availability_zone = "us-east-1"
   instance_type     = "c5-xlarge"
 
