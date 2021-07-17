@@ -17,15 +17,6 @@ data "aws_ami" "linux2_ami" {
   }
 }
 
-resource "random_id" "generate" {
-  keepers = {
-    # Generate a ec2 instance name each time we switch to a new ebs volume 
-    ec2_instance_name = aws_instance.foundry_instance.id
-  }
-
-  byte_length = 8
-}
-
 resource "aws_ebs_volume" "foundry_instance" {
   availability_zone = "us-east-1a"
   size              = 35
@@ -53,7 +44,7 @@ resource "aws_instance" "foundry_instance" {
   instance_type     = "c5-xlarge"
 
   tags = {
-    Name = "${var.tag}-ec2-instance-${random_id.generate.ec2_instance_name}"
+    Name = "${var.tag}-ec2-instance"
     App  = var.tag
   }
 }
