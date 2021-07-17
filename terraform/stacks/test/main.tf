@@ -1,5 +1,6 @@
 data "aws_ami" "linux2_ami" {
   most_recent = true
+  owners = [ "self" ]
 
   filter {
     name   = "name"
