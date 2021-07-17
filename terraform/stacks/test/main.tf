@@ -1,17 +1,15 @@
 data "aws_ami" "linux2_ami" {
   most_recent = true
-  owners = [ "self" ]
 
   filter {
-    name   = "name"
-    values = ["Amazon Linux 2 AMI"]
+   name   = "owner-alias"
+   values = ["amazon"]
   }
 
   filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
+   name   = "name"
+   values = ["amzn2-ami-hvm*"]
+ }
   filter {
     name   = "block-device-mapping.volume-type"
     values = ["gp3"]
