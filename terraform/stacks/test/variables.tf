@@ -1,4 +1,4 @@
 variable "tag" {
-    default = "FoundryVTT"
-    description = "foundry tag name"
+  default     = "FoundryVTT"
+  description = "foundry tag name"
 }

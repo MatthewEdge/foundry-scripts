@@ -1,5 +1,5 @@
 data "aws_ami" "linux2_ami" {
-  most_recent      = true
+  most_recent = true
 
   filter {
     name   = "name"
@@ -36,12 +36,12 @@ resource "aws_ebs_volume" "foundry_instance" {
 }
 
 resource "aws_volume_attachment" "ebs_att" {
-  device_name = "/dev/sdh"
-  volume_id   = aws_ebs_volume.example.id
-  instance_id = aws_instance.foundry_instance.id
+  device_name  = "/dev/sdh"
+  volume_id    = aws_ebs_volume.example.id
+  instance_id  = aws_instance.foundry_instance.id
   skip_destroy = true
   tags = {
-    Name = "${var.tag}-ebs-att" 
+    Name = "${var.tag}-ebs-att"
   }
 }
 
