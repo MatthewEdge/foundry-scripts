@@ -13,7 +13,7 @@ data "aws_ami" "linux2_ami" {
 
   filter {
     name   = "block-device-mapping.volume-type"
-    values = ["gp2"]
+    values = ["gp3"]
   }
 }
 
@@ -32,6 +32,7 @@ resource "aws_ebs_volume" "foundry_instance" {
 
   tags = {
     Name = "${var.tag}-EBS-Volume"
+    App  = var.tag
   }
 }
 
@@ -42,6 +43,7 @@ resource "aws_volume_attachment" "ebs_att" {
   skip_destroy = true
   tags = {
     Name = "${var.tag}-ebs-att"
+    App  = var.tag
   }
 }
 
@@ -52,5 +54,6 @@ resource "aws_instance" "foundry_instance" {
 
   tags = {
     Name = "${var.tag}-ec2-instance-${random_id.generate.ec2_instance_name}"
+    App  = var.tag
   }
 }
