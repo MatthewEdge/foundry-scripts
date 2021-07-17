@@ -33,10 +33,6 @@ resource "aws_volume_attachment" "ebs_att" {
   volume_id    = aws_ebs_volume.foundry_instance.id
   instance_id  = aws_instance.foundry_instance.id
   skip_destroy = true
-  tags = {
-    Name = "${var.tag}-ebs-att"
-    App  = var.tag
-  }
 }
 
 resource "aws_instance" "foundry_instance" {
