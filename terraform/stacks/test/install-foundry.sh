@@ -18,5 +18,4 @@ unzip $HOME/foundryvtt.zip -d $FOUNDRY_PATH
 aws s3 sync --delete s3://${FOUNDRY_BUCKET}/foundry/data $FOUNDRY_DATA
 
 # Start running the server
-cd $FOUNDRY_PATH
-node resources/app/main.js --port 80 --dataPath=$FOUNDRY_DATA
+# TODO systemctl??

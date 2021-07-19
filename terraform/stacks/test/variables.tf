@@ -10,3 +10,7 @@ variable "region" {
 variable "r53_zone_id" {
   default = "Z1IKIK8GNXT5E9"
 }
+
+variable "bucket" {
+  default = "medgelabs-foundry"
+}
