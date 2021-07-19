@@ -6,9 +6,9 @@ FOUNDRY_BIN=foundryvtt-0.8.8.zip
 FOUNDRY_PATH=$HOME/foundryvtt
 FOUNDRY_DATA=$HOME/foundrydata
 
-sudo yum install -y openssl-devel
+yum install -y openssl-devel
 curl --silent --location https://rpm.nodesource.com/setup_14.x | sudo bash -
-sudo yum install -y nodejs
+yum install -y nodejs
 
 mkdir -p $FOUNDRY_PATH
 mkdir -p $FOUNDRY_DATA

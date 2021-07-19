@@ -25,6 +25,16 @@ resource "aws_instance" "foundry_instance" {
     Name = "${var.tag}-ec2-instance"
     App  = var.tag
   }
+
+  # user_data = "${file("install_foundry.sh")}"
+}
+
+resource "aws_route53_record" "foundry" {
+  zone_id = var.r53_zone_id
+  name = "foundry.medgelabs.io"
+  type = "A"
+  ttl = "300"
+  records = [aws_instance.foundry_instance.public_ip]
 }
 
 output "instance_ip_addr" {
