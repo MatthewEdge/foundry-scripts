@@ -17,4 +17,7 @@ IP_ADDR=$(echo "$OUTPUT" | grep instance_ip_addr | cut -d '=' -f2 | cut -d ' ' -
 echo "To connect:"
 echo "ssh -i $HOME/.ssh/$KEY.pem ec2-user@$IP_ADDR -o 'StrictHostKeyChecking no'"
 
+scp -i $HOME/.ssh/$KEY.pem ./install-foundry.sh ec2-user@$IP_ADDR:/home/ec2-user/install.sh
+ssh -i $HOME/.ssh/$KEY.pem ec2-user@$IP_ADDR -o 'StrictHostKeyChecking no' -f '/home/ec2-user/install.sh'
+
 cd $START_DIR

@@ -19,3 +19,4 @@ aws s3 sync --delete s3://${FOUNDRY_BUCKET}/foundry/data $FOUNDRY_DATA
 
 # Start running the server
 # TODO systemctl??
+# node resources/app/main.js --dataPath=$HOME/foundrydata
