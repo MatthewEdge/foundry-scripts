@@ -14,10 +14,11 @@ OUTPUT=$(docker run --rm -e AWS_ACCESS_KEY_ID="${ACCESS_KEY}" -e AWS_SECRET_ACCE
 KEY=$(echo "$OUTPUT" | grep instance_key_name | cut -d '=' -f2 | cut -d ' ' -f2 | sed 's/"//g')
 IP_ADDR=$(echo "$OUTPUT" | grep instance_ip_addr | cut -d '=' -f2 | cut -d ' ' -f2 | sed 's/"//g')
 
+scp -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ./install-foundry.sh ec2-user@$IP_ADDR:/home/ec2-user/install.sh
+ssh -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ec2-user@$IP_ADDR '/home/ec2-user/install.sh'
+
+cd $START_DIR
+
 echo "To connect:"
 echo "ssh -i $HOME/.ssh/$KEY.pem ec2-user@$IP_ADDR -o 'StrictHostKeyChecking no'"
 
-scp -i $HOME/.ssh/$KEY.pem ./install-foundry.sh ec2-user@$IP_ADDR:/home/ec2-user/install.sh
-ssh -i $HOME/.ssh/$KEY.pem ec2-user@$IP_ADDR -o 'StrictHostKeyChecking no' -f '/home/ec2-user/install.sh'
-
-cd $START_DIR

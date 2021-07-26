@@ -6,16 +6,26 @@ FOUNDRY_BIN=foundryvtt-0.8.8.zip
 FOUNDRY_PATH=$HOME/foundryvtt
 FOUNDRY_DATA=$HOME/foundrydata
 
-yum install -y openssl-devel
+sudo yum update -y && sudo yum install -y openssl-devel
 curl --silent --location https://rpm.nodesource.com/setup_14.x | sudo bash -
-yum install -y nodejs
+sudo yum install -y nodejs
 
-mkdir -p $FOUNDRY_PATH
-mkdir -p $FOUNDRY_DATA
+if [ ! -d $FOUNDRY_PATH ]; then
+  echo "FoundryVTT not found. Syncing..."
 
-aws s3 cp s3://${FOUNDRY_BUCKET}/foundry/${FOUNDRY_BIN} $HOME/foundryvtt.zip
-unzip $HOME/foundryvtt.zip -d $FOUNDRY_PATH
-aws s3 sync --delete s3://${FOUNDRY_BUCKET}/foundry/data $FOUNDRY_DATA
+  mkdir -p $FOUNDRY_PATH
+  mkdir -p $FOUNDRY_DATA
+
+  aws s3 cp s3://${FOUNDRY_BUCKET}/foundry/${FOUNDRY_BIN} $HOME/foundryvtt.zip
+  unzip $HOME/foundryvtt.zip -d $FOUNDRY_PATH
+
+  echo "Syncing data folder from S3..."
+  aws s3 sync --delete s3://${FOUNDRY_BUCKET}/foundry/data $FOUNDRY_DATA
+fi
+
+nohup node $FOUNDRY_PATH/resources/app/main.js --dataPath=$HOME/foundrydata > fvtt.out 2>&1 &
+echo $! > fvtt.pid
+echo "Done"
 
 # Start running the server
 # TODO systemctl??
