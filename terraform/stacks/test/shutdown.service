@@ -1,0 +1,14 @@
+[Unit]
+Description=S3 backup on shutdown
+Before=shutdown.target reboot.target halt.target
+Requires=network-online.target network.target
+
+[Service]
+KillMode=none
+ExecStart=/bin/true
+ExecStop=/home/ec2-user/backup-data.sh
+RemainAfterExit=yes
+Type=oneshot
+
+[Install]
+WantedBy=multi-user.target
