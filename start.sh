@@ -19,6 +19,7 @@ scp -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ./run-foundry.sh ec2-us
 
 # Copy backup scripts for systemd
 scp -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ./backup-data.sh ec2-user@$IP_ADDR:/home/ec2-user/backup-data.sh
+ssh -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ec2-user@$IP_ADDR 'sudo reboot'
 
 cd $START_DIR
 

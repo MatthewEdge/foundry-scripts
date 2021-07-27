@@ -66,7 +66,7 @@ resource "aws_instance" "foundry_instance" {
   key_name               = "findthepath"
   iam_instance_profile   = aws_iam_instance_profile.foundry_bucket_profile.name
   instance_type          = "c5.xlarge"
-  user_data              = "scripts/userdata.sh"   
+  user_data              = "scripts/userdata.sh"
   subnet_id              = "subnet-0627ae7cbbe84f6d9"
   vpc_security_group_ids = ["sg-069b1d42ccfb9a3d3"]
 
