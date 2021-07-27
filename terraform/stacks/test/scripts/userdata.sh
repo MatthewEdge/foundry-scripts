@@ -17,18 +17,17 @@ systemctl enable foundry.service
 systemctl start foundry.service
 
 cat >> /etc/systemd/system/shutdown.service <<EOL
-
-mkdir /etc/systemd/system/shutdown.service
+[Unit]
+Description=S3 backup on shutdown
+Before=shutdown.target reboot.target halt.target
+Requires=network-online.target network.target
 
 [Service]
-ExecStart=/usr/bin/node resources/app/main.js --dataPath=${HOME}/foundrydata
-Restart=always
-StandardOutput=syslog
-StandardError=syslog
-SyslogIdentifier=Foundry
-User=ec2-user
-Group=ec2-user
-Environment=NODE_ENV=production
+KillMode=none
+ExecStart=/bin/true
+ExecStop=/home/ec2-user/backup-data.sh
+RemainAfterExit=yes
+Type=oneshot
 
 [Install]
 WantedBy=multi-user.target
@@ -36,3 +35,4 @@ EOL
 
 systemctl enable shutdown.service
 systemctl start shutdown.service
+
