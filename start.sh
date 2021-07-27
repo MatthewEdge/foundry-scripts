@@ -14,12 +14,8 @@ OUTPUT=$(docker run --rm -e AWS_ACCESS_KEY_ID="${ACCESS_KEY}" -e AWS_SECRET_ACCE
 KEY=$(echo "$OUTPUT" | grep instance_key_name | cut -d '=' -f2 | cut -d ' ' -f2 | sed 's/"//g')
 IP_ADDR=$(echo "$OUTPUT" | grep instance_ip_addr | cut -d '=' -f2 | cut -d ' ' -f2 | sed 's/"//g')
 
-# Copy over start script
-scp -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ./run-foundry.sh ec2-user@$IP_ADDR:/home/ec2-user/run-foundry.sh
-
 # Copy backup scripts for systemd
 scp -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ./backup-data.sh ec2-user@$IP_ADDR:/home/ec2-user/backup-data.sh
-ssh -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ec2-user@$IP_ADDR 'sudo reboot'
 
 cd $START_DIR
 
