@@ -11,19 +11,22 @@ curl --silent --location https://rpm.nodesource.com/setup_14.x | sudo bash -
 sudo yum install -y nodejs
 sudo amazon-linux-extras install nginx1 -y
 
-sudo mdkir -p /etc/letsencrypt/live/foundry.medgelabs.io/
+# TODO: Add this back in when certbot setup is configured
+# sudo mdkir -p /etc/letsencrypt/live/foundry.medgelabs.io/
 
 sudo cat >> /etc/nginx/sites-enabled/foundry.medgelabs.io <<EOL
 server {
 
+    # Enter your fully qualified domain name or leave blank
     server_name             foundry.medgelabs.io;
 
-    listen                  443 ssl;
-    ssl_certificate         "/etc/letsencrypt/live/foundry.medgelabs.io/fullchain.pem";
-    ssl_certificate_key     "/etc/letsencrypt/live/foundry.medgelabs.io/privkey.pem";
+    # Listen on port 80 without SSL certificates
+    listen                  80;
 
+    # Sets the Max Upload size to 300 MB
     client_max_body_size 300M;
 
+    # Proxy Requests to Foundry VTT
     location / {
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -34,18 +37,6 @@ server {
 
         proxy_pass http://localhost:30000;
     }
-}
-
-server {
-    if ($host = foundry.medgelabs.io) {
-        return 301 https://$host$request_uri;
-    }
-
-    listen 80;
-	listen [::]:80;
-
-    server_name foundry.medgelabs.io;
-    return 404;
 }
 EOL
 
@@ -75,7 +66,7 @@ if [ ! -d $FOUNDRY_PATH ]; then
       "dataPath": "/home/ec2-user/foundrydata",
       "passwordSalt": null,
       "proxySSL": true,
-      "proxyPort": 443,
+      "proxyPort": 80,
       "minifyStaticFiles": false,
       "updateChannel": "release",
       "language": "en.core",
