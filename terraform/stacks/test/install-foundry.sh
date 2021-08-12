@@ -14,6 +14,10 @@ sudo amazon-linux-extras install nginx1 -y
 # TODO: Add this back in when certbot setup is configured
 # sudo mdkir -p /etc/letsencrypt/live/foundry.medgelabs.io/
 
+# TODO: Possible command
+# docker run -it --rm --name certbot -e AWS_ACCESS_KEY_ID="${ACCESS_KEY}" -e AWS_SECRET_ACCESS_KEY="${SECRET_KEY}" \
+#  -v "${PWD}/certs:/etc/letsencrypt" certbot/certbot certonly --dns-route53 -d foundry.medgelabs.io
+
 sudo cat >> /etc/nginx/sites-enabled/foundry.medgelabs.io <<EOL
 server {
 
@@ -85,4 +89,3 @@ echo "Done"
 # Start running the server
 # TODO systemctl??
 # node resources/app/main.js --dataPath=$HOME/foundrydata
-
