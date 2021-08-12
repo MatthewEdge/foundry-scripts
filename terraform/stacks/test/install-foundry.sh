@@ -14,38 +14,29 @@ sudo amazon-linux-extras install nginx1 -y
 sudo mdkir -p /etc/letsencrypt/live/foundry.medgelabs.io/
 
 sudo cat >> /etc/nginx/sites-enabled/foundry.medgelabs.io <<EOL
-# Define Server
 server {
 
-    # Enter your fully qualified domain name or leave blank
     server_name             foundry.medgelabs.io;
 
-    # Listen on port 443 using SSL certificates
     listen                  443 ssl;
     ssl_certificate         "/etc/letsencrypt/live/foundry.medgelabs.io/fullchain.pem";
     ssl_certificate_key     "/etc/letsencrypt/live/foundry.medgelabs.io/privkey.pem";
 
-    # Sets the Max Upload size to 300 MB
     client_max_body_size 300M;
 
-    # Proxy Requests to Foundry VTT
     location / {
 
-        # Set proxy headers
         proxy_set_header Host $host;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
 
-        # These are important to support WebSockets
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "Upgrade";
 
-        # Make sure to set your Foundry VTT port number
         proxy_pass http://localhost:30000;
     }
 }
 
-# Optional, but recommend. Redirects all HTTP requests to HTTPS for you
 server {
     if ($host = foundry.medgelabs.io) {
         return 301 https://$host$request_uri;
