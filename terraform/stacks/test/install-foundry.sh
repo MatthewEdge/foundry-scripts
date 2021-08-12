@@ -13,7 +13,7 @@ sudo amazon-linux-extras install nginx1 -y
 
 sudo mdkir -p /etc/letsencrypt/live/foundry.medgelabs.io/
 
-sudo cat >> $HOME/etc/nginx/sites-available <<EOL
+sudo cat >> $HOME/etc/nginx/sites-available/foundry.medgelabs.io <<EOL
 # Define Server
 server {
 
