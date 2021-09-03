@@ -191,12 +191,11 @@ resource "aws_iam_role_policy_attachment" "basic-exec-role" {
 # AWS Lambda function
 resource "aws_lambda_function" "scheduler_lambda" {
   filename         = "${path.module}/function.zip"
-  function_name    = "${var.resource_name_prefix}aws-scheduler"
+  function_name    = "foundry-shutdown-scheduler"
   role             = aws_iam_role.scheduler_lambda.arn
   handler          = "app"
   runtime          = "golang:1.x"
-  timeout          = 300
-  source_code_hash = data.archive_file.aws-scheduler.output_base64sha256
+  timeout          = 30
   vpc_config {
     security_group_ids = var.security_group_ids
     subnet_ids         = [var.subnet_id]
