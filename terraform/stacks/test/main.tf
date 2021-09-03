@@ -200,7 +200,7 @@ resource "aws_lambda_function" "scheduler_lambda" {
   function_name    = "foundry-shutdown-scheduler"
   role             = aws_iam_role.scheduler_lambda.arn
   handler          = "app"
-  runtime          = "golang:1.x"
+  runtime          = "go:1.x"
   timeout          = 30
   memory_size      = 128
   vpc_config {
