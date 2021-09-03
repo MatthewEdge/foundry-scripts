@@ -98,6 +98,10 @@ resource "aws_cloudwatch_event_rule" "check-scheduler-event" {
   description         = "check-scheduler-event"
   schedule_expression = var.schedule_expression
   depends_on          = [aws_lambda_function.scheduler_lambda]
+  tags = {
+    Name = "${var.tag}-cloudwatch-event-rule"
+    App  = var.tag
+  }
 }
 
 # Cloudwatch event target
@@ -110,7 +114,6 @@ resource "aws_cloudwatch_event_target" "check-scheduler-event-lambda-target" {
 # IAM Role for Lambda function
 resource "aws_iam_role" "scheduler_lambda" {
   name               = "${var.resource_name_prefix}scheduler_lambda"
-  permissions_boundary = var.permissions_boundary != "" ? var.permissions_boundary : ""
   assume_role_policy = <<EOF
 {
   "Version": "2012-10-17",
@@ -126,7 +129,10 @@ resource "aws_iam_role" "scheduler_lambda" {
   ]
 }
 EOF
-
+  tags = {
+    Name = "${var.tag}-iam-role"
+    App  = var.tag
+  }
 }
 
 data "aws_iam_policy_document" "ec2-access-scheduler" {
@@ -196,9 +202,14 @@ resource "aws_lambda_function" "scheduler_lambda" {
   handler          = "app"
   runtime          = "golang:1.x"
   timeout          = 30
+  memory_size      = 128
   vpc_config {
     security_group_ids = var.security_group_ids
     subnet_ids         = [var.subnet_id]
+  }
+  tags = {
+    Name = "${var.tag}-lambda-function"
+    App  = var.tag
   }
 }
 

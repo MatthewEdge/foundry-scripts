@@ -20,12 +20,6 @@ variable "schedule_expression" {
   description = "the aws cloudwatch event rule schedule expression that specifies when the scheduler runs. Default is 5 minuts past the hour. for debugging use 'rate(5 minutes)'. See https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html"
 }
 
-variable "permissions_boundary" {
-  type 		  = string
-  default 	  = ""
-  description = "AWS IAM Permissions Boundary ARN to be attached to the IAM Role"
-}
-
 variable "security_group_ids" {
   type        = list(string)
   default     = ["sg-069b1d42ccfb9a3d3"]
