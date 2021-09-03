@@ -203,10 +203,6 @@ resource "aws_lambda_function" "scheduler_lambda" {
   runtime          = "go1.x"
   timeout          = 30
   memory_size      = 128
-  vpc_config {
-    security_group_ids = var.security_group_ids
-    subnet_ids         = [var.subnet_id]
-  }
   tags = {
     Name = "${var.tag}-lambda-function"
     App  = var.tag
