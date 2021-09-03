@@ -37,8 +37,3 @@ variable "subnet_id" {
   default     = "subnet-0627ae7cbbe84f6d9"
   description = "list of subnet_ids that the scheduler runs in."
 }
-
-variable "resource_name_prefix" {
-  default     = ""
-  description = "a prefix to apply to resource names created by this module."
-}
