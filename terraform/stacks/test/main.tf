@@ -190,7 +190,7 @@ resource "aws_iam_role_policy_attachment" "basic-exec-role" {
 
 # AWS Lambda function
 resource "aws_lambda_function" "scheduler_lambda" {
-  filename         = "${path.module}/../../../instance-stopper/function.zip"
+  filename         = "${path.module}/function.zip"
   function_name    = "${var.resource_name_prefix}aws-scheduler"
   role             = aws_iam_role.scheduler_lambda.arn
   handler          = "app"
