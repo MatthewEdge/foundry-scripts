@@ -66,8 +66,8 @@ resource "aws_instance" "foundry_instance" {
   key_name               = "findthepath"
   iam_instance_profile = "${aws_iam_instance_profile.foundry_bucket_profile.name}"
   instance_type          = "c5.xlarge"
-  subnet_id              = "subnet-0627ae7cbbe84f6d9"
-  vpc_security_group_ids = ["sg-069b1d42ccfb9a3d3"]
+  subnet_id              = var.subnet_id
+  vpc_security_group_ids = var.security_group_ids
 
   root_block_device {
     delete_on_termination = true
@@ -90,10 +90,123 @@ resource "aws_route53_record" "foundry" {
   records = [aws_instance.foundry_instance.public_ip]
 }
 
-output "instance_ip_addr" {
-  value = aws_instance.foundry_instance.public_ip
+// Start Lambda resource creation
+
+# Cloudwatch event rule
+resource "aws_cloudwatch_event_rule" "check-scheduler-event" {
+  name                = "${var.resource_name_prefix}check-scheduler-event"
+  description         = "check-scheduler-event"
+  schedule_expression = var.schedule_expression
+  depends_on          = [aws_lambda_function.scheduler_lambda]
 }
 
-output "instance_key_name" {
-  value = aws_instance.foundry_instance.key_name
+# Cloudwatch event target
+resource "aws_cloudwatch_event_target" "check-scheduler-event-lambda-target" {
+  target_id = "check-scheduler-event-lambda-target"
+  rule      = aws_cloudwatch_event_rule.check-scheduler-event.name
+  arn       = aws_lambda_function.scheduler_lambda.arn
+}
+
+# IAM Role for Lambda function
+resource "aws_iam_role" "scheduler_lambda" {
+  name               = "${var.resource_name_prefix}scheduler_lambda"
+  permissions_boundary = var.permissions_boundary != "" ? var.permissions_boundary : ""
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "lambda.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+
+}
+
+data "aws_iam_policy_document" "ec2-access-scheduler" {
+  statement {
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:StopInstances",
+      "ec2:StartInstances",
+      "ec2:CreateTags",
+    ]
+    resources = [
+      "*",
+    ]
+  }
+}
+
+resource "aws_iam_policy" "ec2-access-scheduler" {
+  name   = "${var.resource_name_prefix}ec2-access-scheduler"
+  path   = "/"
+  policy = data.aws_iam_policy_document.ec2-access-scheduler.json
+}
+
+resource "aws_iam_role_policy_attachment" "ec2-access-scheduler" {
+  role       = aws_iam_role.scheduler_lambda.name
+  policy_arn = aws_iam_policy.ec2-access-scheduler.arn
+}
+
+## create custom role
+
+resource "aws_iam_policy" "scheduler_aws_lambda_basic_execution_role" {
+  name        = "${var.resource_name_prefix}scheduler_aws_lambda_basic_execution_role"
+  path        = "/"
+  description = "AWSLambdaBasicExecutionRole"
+
+  policy = <<EOF
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface"
+            ],
+            "Resource": "*"
+        }
+    ]
+}
+EOF
+
+}
+
+resource "aws_iam_role_policy_attachment" "basic-exec-role" {
+  role       = aws_iam_role.scheduler_lambda.name
+  policy_arn = aws_iam_policy.scheduler_aws_lambda_basic_execution_role.arn
+}
+
+# AWS Lambda function
+resource "aws_lambda_function" "scheduler_lambda" {
+  filename         = "${path.module}/instance-stopper/function.zip"
+  function_name    = "${var.resource_name_prefix}aws-scheduler"
+  role             = aws_iam_role.scheduler_lambda.arn
+  handler          = "aws-scheduler.handler"
+  runtime          = "golang:1.x"
+  timeout          = 300
+  source_code_hash = data.archive_file.aws-scheduler.output_base64sha256
+  vpc_config {
+    security_group_ids = var.security_group_ids
+    subnet_ids         = [var.subnet_id]
+  }
+}
+
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_scheduler" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.scheduler_lambda.function_name
+  principal     = "events.amazonaws.com"
+  source_arn    = aws_cloudwatch_event_rule.check-scheduler-event.arn
 }
