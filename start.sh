@@ -1,6 +1,15 @@
 #!/bin/sh
 
 START_DIR=$PWD
+
+# Instance stopper Lambda
+echo "Building Lambda infra"
+cd instance-stopper
+make dist
+cd $START_DIR
+mv instance-stopper/function.zip terraform/stacks/test/function.zip
+
+# Terraform
 cd terraform/stacks/test
 
 export ACCESS_KEY=$(cat $HOME/.aws/credentials| grep aws_access_key_id | cut -d '=' -f2 | cut -d ' ' -f2)
@@ -18,6 +27,8 @@ scp -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ./install-foundry.sh ec
 ssh -i $HOME/.ssh/$KEY.pem -o 'StrictHostKeyChecking no' ec2-user@$IP_ADDR '/home/ec2-user/install.sh'
 
 cd $START_DIR
+
+(cd instance-stopper && make clean)
 
 echo "To connect:"
 echo "ssh -i $HOME/.ssh/$KEY.pem ec2-user@$IP_ADDR -o 'StrictHostKeyChecking no'"
