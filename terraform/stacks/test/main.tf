@@ -193,7 +193,7 @@ resource "aws_lambda_function" "scheduler_lambda" {
   filename         = "${path.module}/instance-stopper/function.zip"
   function_name    = "${var.resource_name_prefix}aws-scheduler"
   role             = aws_iam_role.scheduler_lambda.arn
-  handler          = "aws-scheduler.handler"
+  handler          = "app"
   runtime          = "golang:1.x"
   timeout          = 300
   source_code_hash = data.archive_file.aws-scheduler.output_base64sha256
