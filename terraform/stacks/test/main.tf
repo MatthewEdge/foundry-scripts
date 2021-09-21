@@ -112,10 +112,14 @@ resource "aws_lb" "front_end" {
 
 resource "aws_lb_target_group" "front_end" {
   name                 = "foundry-front-end-tg"
-  port                 = 443
-  protocol             = "HTTPS"
+  port                 = 30000
+  protocol             = "HTTP"
   vpc_id               = "vpc-057b3c8c30b29cf5e"
   deregistration_delay = 10
+
+  health_check {
+    matcher = "200-302"
+  }
 }
 
 resource "aws_lb_target_group_attachment" "front_end" {
