@@ -101,7 +101,7 @@ resource "aws_lb" "front_end" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["sg-069b1d42ccfb9a3d3"]
-  subnets            = "subnet-0627ae7cbbe84f6d9"
+  subnets            = ["subnet-0627ae7cbbe84f6d9"]
 
   enable_deletion_protection = false
 
@@ -111,10 +111,10 @@ resource "aws_lb" "front_end" {
 }
 
 resource "aws_lb_target_group" "front_end" {
-  name     = "tf-example-lb-tg"
+  name     = "foundry-front-end-tg"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = aws_vpc.selected.id
+  vpc_id   = data.aws_vpc.selected.id
 }
 
 resource "aws_lb_target_group_attachment" "front_end" {
@@ -143,6 +143,12 @@ resource "aws_lb_listener_rule" "front_end" {
   action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.front_end.arn
+  }
+
+  condition {
+    host_header {
+      values = ["foundry.medgelabs.io"]
+    }
   }
 
   depends_on = [
