@@ -88,7 +88,6 @@ resource "aws_route53_record" "foundry" {
   zone_id = var.r53_zone_id
   name    = "foundry.medgelabs.io"
   type    = "A"
-  ttl     = "300"
   
   alias {
     name = aws_lb.front_end.dns_name
