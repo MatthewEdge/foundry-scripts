@@ -140,7 +140,12 @@ resource "aws_lb_listener" "front_end" {
   }
 }
 
-resource "aws_lb_listener_rule" "static" {
+resource "aws_lb_listener_rule" "front_end" {
   listener_arn = aws_lb_listener.front_end.arn
   priority     = 100
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.front_end.arn
+  }
 }
