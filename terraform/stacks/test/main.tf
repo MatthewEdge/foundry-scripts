@@ -88,10 +88,10 @@ resource "aws_route53_record" "foundry" {
   zone_id = var.r53_zone_id
   name    = "foundry.medgelabs.io"
   type    = "A"
-  
+
   alias {
-    name = aws_lb.front_end.dns_name
-    zone_id = aws_lb.front_end.zone_id
+    name                   = aws_lb.front_end.dns_name
+    zone_id                = aws_lb.front_end.zone_id
     evaluate_target_health = true
   }
 }
@@ -101,7 +101,7 @@ resource "aws_lb" "front_end" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["sg-069b1d42ccfb9a3d3"]
-  subnets            = ["subnet-0627ae7cbbe84f6d9","subnet-0fa32319727709f09"]
+  subnets            = ["subnet-0627ae7cbbe84f6d9", "subnet-0fa32319727709f09"]
 
   enable_deletion_protection = false
 
