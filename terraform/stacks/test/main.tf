@@ -1,4 +1,5 @@
 #TODO: Create single tag and merge app name
+#TODO: Upate the names of resources and names on resources
 
 data "aws_ami" "linux2_ami" {
   most_recent = true
@@ -97,7 +98,7 @@ resource "aws_route53_record" "foundry" {
 }
 
 resource "aws_lb" "front_end" {
-  name               = "test-lb-tf"
+  name               = "foundry-front-end-lb"
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["sg-069b1d42ccfb9a3d3"]
