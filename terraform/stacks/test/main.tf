@@ -10,10 +10,6 @@ data "aws_ami" "linux2_ami" {
   }
 }
 
-data "aws_vpc" "selected" {
-  default = true
-}
-
 resource "aws_iam_role" "ec2_s3_access_role" {
   name = "foundry_s3_role"
   assume_role_policy = jsonencode({
@@ -114,7 +110,7 @@ resource "aws_lb_target_group" "front_end" {
   name     = "foundry-front-end-tg"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = data.aws_vpc.selected.arn
+  vpc_id   = "vpc-057b3c8c30b29cf5e"
 }
 
 resource "aws_lb_target_group_attachment" "front_end" {
