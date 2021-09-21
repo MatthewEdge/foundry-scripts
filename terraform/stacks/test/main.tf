@@ -97,7 +97,7 @@ resource "aws_lb" "front_end" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["sg-069b1d42ccfb9a3d3"]
-  subnets            = ["subnet-0627ae7cbbe84f6d9"]
+  subnets            = ["subnet-0627ae7cbbe84f6d9","subnet-0fa32319727709f09"]
 
   enable_deletion_protection = false
 
