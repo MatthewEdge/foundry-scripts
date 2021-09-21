@@ -123,17 +123,12 @@ resource "aws_lb_target_group_attachment" "front_end" {
   port             = 3000
 }
 
-resource "aws_lb_listener_certificate" "front_end" {
-  listener_arn    = aws_lb_listener.front_end.arn
-  certificate_arn = "arn:aws:acm:us-east-1:822471943354:certificate/c636951d-3994-49a3-9752-42b0103cd3ca"
-}
-
 resource "aws_lb_listener" "front_end" {
   load_balancer_arn = aws_lb.front_end.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = aws_lb_listener_certificate.front_end.arn
+  certificate_arn   = "arn:aws:acm:us-east-1:822471943354:certificate/c636951d-3994-49a3-9752-42b0103cd3ca"
 
   default_action {
     type             = "forward"
