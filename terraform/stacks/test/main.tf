@@ -114,7 +114,7 @@ resource "aws_lb_target_group" "front_end" {
   name     = "foundry-front-end-tg"
   port     = 443
   protocol = "HTTPS"
-  vpc_id   = data.aws_vpc.selected.id
+  vpc_id   = data.aws_vpc.selected.arn
 }
 
 resource "aws_lb_target_group_attachment" "front_end" {
