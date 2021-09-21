@@ -89,7 +89,12 @@ resource "aws_route53_record" "foundry" {
   name    = "foundry.medgelabs.io"
   type    = "A"
   ttl     = "300"
-  records = [aws_instance.foundry_instance.public_ip]
+  
+  alias {
+    name = aws_lb.front_end.dns_name
+    zone_id = aws_lb.front_end.zone_id
+    evaluate_target_health = true
+  }
 }
 
 resource "aws_lb" "front_end" {
@@ -116,7 +121,7 @@ resource "aws_lb_target_group" "front_end" {
 resource "aws_lb_target_group_attachment" "front_end" {
   target_group_arn = aws_lb_target_group.front_end.arn
   target_id        = aws_instance.foundry_instance.id
-  port             = 3000
+  port             = 30000
 }
 
 resource "aws_lb_listener" "front_end" {
