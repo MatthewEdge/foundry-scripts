@@ -121,6 +121,7 @@ resource "aws_lb_target_group_attachment" "front_end" {
   target_group_arn = aws_lb_target_group.front_end.arn
   target_id        = aws_instance.foundry_instance.id
   port             = 3000
+}
 
 resource "aws_lb_listener_certificate" "front_end" {
   listener_arn    = aws_lb_listener.front_end.arn
@@ -148,4 +149,8 @@ resource "aws_lb_listener_rule" "front_end" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.front_end.arn
   }
+
+  depends_on = [
+    aws_lb_target_group.front_end
+  ]
 }
