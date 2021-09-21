@@ -57,7 +57,7 @@ resource "aws_iam_policy" "foundry_bucket_access" {
 
 resource "aws_iam_policy_attachment" "foundry_attach" {
   name       = "foundry_bucket_attachment"
-  roles      = ["${aws_iam_role.ec2_s3_access_role.name}"]
+  roles      = [aws_iam_role.ec2_s3_access_role.name]
   policy_arn = aws_iam_policy.foundry_bucket_access.arn
 }
 
