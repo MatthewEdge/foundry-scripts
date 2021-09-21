@@ -1,3 +1,5 @@
+#TODO: Create single tag and merge app name
+
 data "aws_ami" "linux2_ami" {
   most_recent = true
   owners      = ["amazon"]
@@ -6,6 +8,10 @@ data "aws_ami" "linux2_ami" {
     name   = "name"
     values = ["amzn2-ami-hvm*"]
   }
+}
+
+data "aws_vpc" "selected" {
+  default = true
 }
 
 resource "aws_iam_role" "ec2_s3_access_role" {
@@ -88,4 +94,53 @@ resource "aws_route53_record" "foundry" {
   type = "A"
   ttl = "300"
   records = [aws_instance.foundry_instance.public_ip]
+}
+
+resource "aws_lb" "front_end" {
+  name               = "test-lb-tf"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = ["sg-069b1d42ccfb9a3d3"]
+  subnets            = "subnet-0627ae7cbbe84f6d9"
+
+  enable_deletion_protection = false
+
+  tags = {
+    Name = "${var.tag}-aws-lb"
+  }
+}
+
+resource "aws_lb_target_group" "front_end" {
+  name     = "tf-example-lb-tg"
+  port     = 443
+  protocol = "HTTPS"
+  vpc_id   = aws_vpc.selected.id
+}
+
+resource "aws_lb_target_group_attachment" "front_end" {
+  target_group_arn = aws_lb_target_group.front_end.arn
+  target_id        = aws_instance.foundry_instance.id
+  port             = 3000
+
+resource "aws_lb_listener_certificate" "front_end" {
+  listener_arn    = aws_lb_listener.front_end.arn
+  certificate_arn = "arn:aws:acm:us-east-1:822471943354:certificate/c636951d-3994-49a3-9752-42b0103cd3ca"
+}
+
+resource "aws_lb_listener" "front_end" {
+  load_balancer_arn = aws_lb.front_end.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+  certificate_arn   = aws_lb_listener_certificate.front_end.arn
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.front_end.arn
+  }
+}
+
+resource "aws_lb_listener_rule" "static" {
+  listener_arn = aws_lb_listener.front_end.arn
+  priority     = 100
 }
