@@ -76,12 +76,6 @@ resource "aws_instance" "foundry_instance" {
     delete_on_termination = true
     volume_size           = 30
   }
-
-  tags = {
-    Name = "${var.tag}-ec2-instance"
-    App  = var.tag
-  }
-
   # user_data = "${file("install_foundry.sh")}"
 }
 
@@ -105,10 +99,6 @@ resource "aws_lb" "front_end" {
   subnets            = ["subnet-0627ae7cbbe84f6d9", "subnet-0fa32319727709f09"]
 
   enable_deletion_protection = false
-
-  tags = {
-    Name = "${var.tag}-aws-lb"
-  }
 }
 
 resource "aws_lb_target_group" "front_end" {
