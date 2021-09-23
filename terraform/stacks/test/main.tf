@@ -10,6 +10,11 @@ data "aws_ami" "linux2_ami" {
   }
 }
 
+data "aws_acm_certificate" "issued" {
+  domain   = "*.medgelabs.io"
+  statuses = ["ISSUED"]
+}
+
 resource "aws_iam_role" "ec2_s3_access_role" {
   name = "foundry_s3_role"
   assume_role_policy = jsonencode({
@@ -123,7 +128,7 @@ resource "aws_lb_listener" "foundry" {
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
-  certificate_arn   = "arn:aws:acm:us-east-1:822471943354:certificate/c636951d-3994-49a3-9752-42b0103cd3ca"
+  certificate_arn   = data.aws_acm_certificate.issued.arn
 
   default_action {
     type             = "forward"
