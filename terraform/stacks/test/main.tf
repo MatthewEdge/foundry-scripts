@@ -1,5 +1,4 @@
 #TODO: Create single tag and merge app name
-#TODO: Upate the names of resources and names on resources
 
 data "aws_ami" "linux2_ami" {
   most_recent = true
@@ -85,14 +84,14 @@ resource "aws_route53_record" "foundry" {
   type    = "A"
 
   alias {
-    name                   = aws_lb.front_end.dns_name
-    zone_id                = aws_lb.front_end.zone_id
+    name                   = aws_lb.foundry.dns_name
+    zone_id                = aws_lb.foundry.zone_id
     evaluate_target_health = true
   }
 }
 
-resource "aws_lb" "front_end" {
-  name               = "foundry-front-end-lb"
+resource "aws_lb" "foundry" {
+  name               = "foundryVTT-load-balancer"
   internal           = false
   load_balancer_type = "application"
   security_groups    = ["sg-069b1d42ccfb9a3d3"]
@@ -101,8 +100,8 @@ resource "aws_lb" "front_end" {
   enable_deletion_protection = false
 }
 
-resource "aws_lb_target_group" "front_end" {
-  name                 = "foundry-front-end-tg"
+resource "aws_lb_target_group" "foundry" {
+  name                 = "foundryVTT-target-group"
   port                 = 30000
   protocol             = "HTTP"
   vpc_id               = "vpc-057b3c8c30b29cf5e"
@@ -113,14 +112,14 @@ resource "aws_lb_target_group" "front_end" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "front_end" {
-  target_group_arn = aws_lb_target_group.front_end.arn
+resource "aws_lb_target_group_attachment" "foundry" {
+  target_group_arn = aws_lb_target_group.foundry.arn
   target_id        = aws_instance.foundry_instance.id
   port             = 30000
 }
 
-resource "aws_lb_listener" "front_end" {
-  load_balancer_arn = aws_lb.front_end.arn
+resource "aws_lb_listener" "foundry" {
+  load_balancer_arn = aws_lb.foundry.arn
   port              = "443"
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
@@ -128,17 +127,17 @@ resource "aws_lb_listener" "front_end" {
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.front_end.arn
+    target_group_arn = aws_lb_target_group.foundry.arn
   }
 }
 
-resource "aws_lb_listener_rule" "front_end" {
-  listener_arn = aws_lb_listener.front_end.arn
+resource "aws_lb_listener_rule" "foundry" {
+  listener_arn = aws_lb_listener.foundry.arn
   priority     = 100
 
   action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.front_end.arn
+    target_group_arn = aws_lb_target_group.foundry.arn
   }
 
   condition {
@@ -148,6 +147,6 @@ resource "aws_lb_listener_rule" "front_end" {
   }
 
   depends_on = [
-    aws_lb_target_group.front_end
+    aws_lb_target_group.foundry
   ]
 }
