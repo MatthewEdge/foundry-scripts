@@ -14,3 +14,7 @@ variable "r53_zone_id" {
 variable "bucket" {
   default = "medgelabs-foundry"
 }
+
+variable "foundry_dns_name" {
+  default = "foundry.medgelabs.io"
+}

@@ -80,7 +80,7 @@ resource "aws_instance" "foundry_instance" {
 
 resource "aws_route53_record" "foundry" {
   zone_id = var.r53_zone_id
-  name    = "foundry.medgelabs.io"
+  name    = var.foundry_dns_name
   type    = "A"
 
   alias {
@@ -142,7 +142,7 @@ resource "aws_lb_listener_rule" "foundry" {
 
   condition {
     host_header {
-      values = ["foundry.medgelabs.io"]
+      values = [var.foundry_dns_name]
     }
   }
 
