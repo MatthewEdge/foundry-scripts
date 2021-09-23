@@ -11,7 +11,7 @@ data "aws_ami" "linux2_ami" {
 }
 
 data "aws_acm_certificate" "issued" {
-  domain   = "*.medgelabs.io"
+  domain   = "medgelabs.io"
   statuses = ["ISSUED"]
 }
 
