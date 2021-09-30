@@ -1,7 +1,7 @@
 #!/bin/sh
 
 FOUNDRY_BUCKET=medgelabs-foundry
-FOUNDRY_BIN=foundryvtt-0.8.8.zip
+FOUNDRY_BIN=foundryvtt-0.8.9.zip
 
 FOUNDRY_PATH=$HOME/foundryvtt
 FOUNDRY_DATA=$HOME/foundrydata
