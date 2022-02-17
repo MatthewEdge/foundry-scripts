@@ -70,7 +70,7 @@ resource "aws_iam_instance_profile" "foundry_bucket_profile" {
 resource "aws_instance" "foundry_instance" {
   ami                    = data.aws_ami.linux2_ami.id
   availability_zone      = "${var.region}a"
-  key_name               = "findthepath"
+  key_name               = "foundry"
   iam_instance_profile   = aws_iam_instance_profile.foundry_bucket_profile.name
   instance_type          = "c5.xlarge"
   subnet_id              = "subnet-0627ae7cbbe84f6d9"
