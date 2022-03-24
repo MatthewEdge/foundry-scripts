@@ -6,10 +6,6 @@ FOUNDRY_BIN=foundryvtt-9.255.zip
 FOUNDRY_PATH=$HOME/foundryvtt
 FOUNDRY_DATA=$HOME/foundrydata
 
-sudo yum update -y && sudo yum install -y openssl-devel
-curl --silent --location https://rpm.nodesource.com/setup_lts.x | sudo bash -
-sudo yum install -y nodejs
-
 if [ ! -d $FOUNDRY_PATH ]; then
   echo "FoundryVTT not found. Syncing..."
 
