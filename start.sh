@@ -3,7 +3,7 @@
 set -e
 
 START_DIR=$PWD
-cd terraform/stacks/test
+cd terraform/foundryvtt
 
 export ACCESS_KEY=$(cat $HOME/.aws/credentials| grep aws_access_key_id | cut -d '=' -f2 | cut -d ' ' -f2)
 export SECRET_KEY=$(cat $HOME/.aws/credentials| grep aws_secret_access_key | cut -d '=' -f2 | cut -d ' ' -f2)
