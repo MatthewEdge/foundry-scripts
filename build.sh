@@ -2,7 +2,6 @@
 
 set -e
 
-START_DIR=$PWD
 cd packer/
 
 export ACCESS_KEY=$(cat $HOME/.aws/credentials| grep aws_access_key_id | cut -d '=' -f2 | cut -d ' ' -f2)
