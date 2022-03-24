@@ -8,7 +8,7 @@ help:
 ## build: Build the AMI used by make start. Should only be run once per base image config change
 .PHONY: build
 build:
-	echo "TODO: Packer step"
+	./build.sh
 
 ## start: Run the Terraform provisioning step
 .PHONY: start
