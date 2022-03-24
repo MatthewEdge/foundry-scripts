@@ -1,12 +1,13 @@
 #TODO: Create single tag and merge app name
+data "aws_caller_identity" "current" {}
 
 data "aws_ami" "linux2_ami" {
   most_recent = true
-  owners      = ["amazon"]
+  owners      = [data.aws_caller_identity.current.account_id] # Should be the account id of your account since packer created the new ami
 
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm*"]
+    values = ["foundry-ami"]
   }
 }
 
